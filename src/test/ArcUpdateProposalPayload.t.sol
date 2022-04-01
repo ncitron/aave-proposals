@@ -11,7 +11,7 @@ import {stdCheats} from "forge-std/stdlib.sol";
 import "./interfaces/Vm.sol";
 import "../interfaces/IAaveGovernanceV2.sol";
 import "../interfaces/IExecutorWithTimelock.sol";
-import "../ProposalPayload.sol";
+import "../ArcUpdateProposalPayload.sol";
 
 contract ProposalPayloadTest is DSTest, stdCheats {
     Vm vm = Vm(HEVM_ADDRESS);
@@ -20,6 +20,7 @@ contract ProposalPayloadTest is DSTest, stdCheats {
 
     address aaveGovernanceAddress = 0xEC568fffba86c094cf06b22134B23074DFE2252c;
     address aaveGovernanceShortExecutor = 0xEE56e2B3D491590B5b31738cC34d5232F378a8D5;
+    address aaveArcTimelock = 0xAce1d11d836cb3F51Ef658FD4D353fFb3c301218;
 
     IAaveGovernanceV2 aaveGovernanceV2 = IAaveGovernanceV2(aaveGovernanceAddress);
     IExecutorWithTimelock shortExecutor = IExecutorWithTimelock(aaveGovernanceShortExecutor);
@@ -83,7 +84,7 @@ contract ProposalPayloadTest is DSTest, stdCheats {
         // tokenDistributorAddress = deployCode("TokenDistributor.sol:TokenDistributor");
         // ecosystemReserveAddress = deployCode("AaveEcosystemReserve.sol:AaveEcosystemReserve");
 
-        ProposalPayload proposalPayload = new ProposalPayload();
+        ArcUpdateProposalPayload proposalPayload = new ArcUpdateProposalPayload();
         proposalPayloadAddress = address(proposalPayload);
 
         bytes memory emptyBytes;
