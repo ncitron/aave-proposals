@@ -17,7 +17,7 @@ contract ArcUpdateProposalPayload {
     ILendingPoolConfigurator constant configurator = ILendingPoolConfigurator(0x4e1c7865e7BE78A7748724Fa0409e88dc14E67aA);
 
     /// @notice AAVE ARC timelock
-    IArcTimelock arcTimelock = IArcTimelock(0xAce1d11d836cb3F51Ef658FD4D353fFb3c301218);
+    IArcTimelock constant arcTimelock = IArcTimelock(0xAce1d11d836cb3F51Ef658FD4D353fFb3c301218);
 
     /// @notice usdc token
     address constant usdc = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
@@ -34,8 +34,17 @@ contract ArcUpdateProposalPayload {
     /// @notice The AAVE governance contract calls this to queue up an
     /// @notice action to the AAVE ARC timelock
     function executeQueueTimelock() external {
-        address 
-        arcTimelock.queue(address(this), 0, , calldatas, withDelegatecalls);
+        address[] memory targets = new address[](1);
+        uint256[] memory values = new uint256[](1);
+        string[] memory signatures = new string[](1);
+        bytes[] memory calldatas = new bytes[](1);
+        bool[] memory withDelegatecalls = new bool[](1);
+
+        targets[0] = address(this);
+        signatures[0] = "execute()";
+        withDelegatecalls[0] = true;
+
+        arcTimelock.queue(targets, values, signatures, calldatas, withDelegatecalls);
     }
 
     /// @notice The AAVE ARC timelock delegateCalls this

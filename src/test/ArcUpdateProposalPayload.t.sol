@@ -91,7 +91,7 @@ contract ProposalPayloadTest is DSTest, stdCheats {
 
         targets.push(proposalPayloadAddress);
         values.push(0);
-        signatures.push("execute()");
+        signatures.push("executeQueueTimelock()");
         calldatas.push(emptyBytes);
         withDelegatecalls.push(true);
 
