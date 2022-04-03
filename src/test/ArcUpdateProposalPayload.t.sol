@@ -12,6 +12,7 @@ import "./interfaces/Vm.sol";
 import "../interfaces/IArcTimelock.sol";
 import "../interfaces/IAaveGovernanceV2.sol";
 import "../interfaces/IExecutorWithTimelock.sol";
+import "../interfaces/IProtocolDataProvider.sol";
 import "../ArcUpdateProposalPayload.sol";
 
 contract ProposalPayloadTest is DSTest, stdCheats {
@@ -21,10 +22,11 @@ contract ProposalPayloadTest is DSTest, stdCheats {
 
     address aaveGovernanceAddress = 0xEC568fffba86c094cf06b22134B23074DFE2252c;
     address aaveGovernanceShortExecutor = 0xEE56e2B3D491590B5b31738cC34d5232F378a8D5;
+    
     IArcTimelock arcTimelock = IArcTimelock(0xAce1d11d836cb3F51Ef658FD4D353fFb3c301218);
-
     IAaveGovernanceV2 aaveGovernanceV2 = IAaveGovernanceV2(aaveGovernanceAddress);
     IExecutorWithTimelock shortExecutor = IExecutorWithTimelock(aaveGovernanceShortExecutor);
+    IProtocolDataProvider dataProvider = IProtocolDataProvider(0x71B53fC437cCD988b1b89B1D4605c3c3d0C810ea);
 
     address[] private aaveWhales;
 
@@ -40,6 +42,13 @@ contract ProposalPayloadTest is DSTest, stdCheats {
     bytes32 private ipfsHash = 0x0;
 
     uint256 proposalId;
+
+    // tokens
+    address constant usdc = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+    address constant weth = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+    address constant wbtc = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599;
+    address constant aave = 0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9;
+
 
     function setUp() public {
         // aave whales may need to be updated based on the block being used
@@ -62,8 +71,39 @@ contract ProposalPayloadTest is DSTest, stdCheats {
     }
 
     function testExecute() public {
+        // execute proposal
         _executeProposal();
         _executeArcTimelock();
+
+        // validate post execution state
+        uint256 ltv;
+        uint256 liqThresh;
+        uint256 liqBonus;
+        uint256 reserveFactor;
+
+        (, ltv, liqThresh, liqBonus, reserveFactor,,,,,) = dataProvider.getReserveConfigurationData(usdc);
+        assertEq(ltv, 8300);
+        assertEq(liqThresh, 8500);
+        assertEq(liqBonus, 10400);
+        assertEq(reserveFactor, 1000);
+
+        (, ltv, liqThresh, liqBonus, reserveFactor,,,,,) = dataProvider.getReserveConfigurationData(weth);
+        assertEq(ltv, 8300);
+        assertEq(liqThresh, 8500);
+        assertEq(liqBonus, 10500);
+        assertEq(reserveFactor, 1000);
+
+        (, ltv, liqThresh, liqBonus, reserveFactor,,,,,) = dataProvider.getReserveConfigurationData(wbtc);
+        assertEq(ltv, 7000);
+        assertEq(liqThresh, 7500);
+        assertEq(liqBonus, 10700);
+        assertEq(reserveFactor, 2000);
+
+        (, ltv, liqThresh, liqBonus, reserveFactor,,,,,) = dataProvider.getReserveConfigurationData(aave);
+        assertEq(ltv, 6000);
+        assertEq(liqThresh, 7000);
+        assertEq(liqBonus, 10800);
+        assertEq(reserveFactor, 0);
     }
 
     function _executeProposal() public {
