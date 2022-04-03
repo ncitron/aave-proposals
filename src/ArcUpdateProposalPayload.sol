@@ -30,6 +30,13 @@ contract ArcUpdateProposalPayload {
 
     /// @notice aave token
     address constant aave = 0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9;
+
+    /// @notice address of current contract
+    address immutable self;
+
+    constructor() public {
+        self = address(this);
+    }
     
     /// @notice The AAVE governance contract calls this to queue up an
     /// @notice action to the AAVE ARC timelock
@@ -40,7 +47,7 @@ contract ArcUpdateProposalPayload {
         bytes[] memory calldatas = new bytes[](1);
         bool[] memory withDelegatecalls = new bool[](1);
 
-        targets[0] = address(this);
+        targets[0] = self;
         signatures[0] = "execute()";
         withDelegatecalls[0] = true;
 
@@ -50,16 +57,16 @@ contract ArcUpdateProposalPayload {
     /// @notice The AAVE ARC timelock delegateCalls this
     function execute() external {
         // address, ltv, liqthresh, bonus
-        configurator.configureReserveAsCollateral(usdc, 8300, 8500, 10400);
-        configurator.setReserveFactor(usdc, 1000);
+        // configurator.configureReserveAsCollateral(usdc, 8300, 8500, 10400);
+        // configurator.setReserveFactor(usdc, 1000);
 
-        configurator.configureReserveAsCollateral(weth, 8300, 8500, 10500);
-        configurator.setReserveFactor(weth, 1000);
+        // configurator.configureReserveAsCollateral(weth, 8300, 8500, 10500);
+        // configurator.setReserveFactor(weth, 1000);
 
-        configurator.configureReserveAsCollateral(wbtc, 7000, 7500, 10700);
-        configurator.setReserveFactor(wbtc, 2000);
+        // configurator.configureReserveAsCollateral(wbtc, 7000, 7500, 10700);
+        // configurator.setReserveFactor(wbtc, 2000);
 
-        configurator.configureReserveAsCollateral(aave, 6000, 7000, 10800);
-        configurator.setReserveFactor(aave, 0);
+        // configurator.configureReserveAsCollateral(aave, 6000, 7000, 10800);
+        // configurator.setReserveFactor(aave, 0);
     }
 }

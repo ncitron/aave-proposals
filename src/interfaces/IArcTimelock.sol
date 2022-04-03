@@ -8,4 +8,8 @@ interface IArcTimelock {
         bytes[] memory calldatas,
         bool[] memory withDelegatecalls
     ) external;
+
+    function getActionsSetCount() external returns (uint256);
+    
+    function execute(uint256) external payable;
 }

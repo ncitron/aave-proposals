@@ -9,6 +9,7 @@ import {stdCheats} from "forge-std/stdlib.sol";
 
 // contract dependencies
 import "./interfaces/Vm.sol";
+import "../interfaces/IArcTimelock.sol";
 import "../interfaces/IAaveGovernanceV2.sol";
 import "../interfaces/IExecutorWithTimelock.sol";
 import "../ArcUpdateProposalPayload.sol";
@@ -20,7 +21,7 @@ contract ProposalPayloadTest is DSTest, stdCheats {
 
     address aaveGovernanceAddress = 0xEC568fffba86c094cf06b22134B23074DFE2252c;
     address aaveGovernanceShortExecutor = 0xEE56e2B3D491590B5b31738cC34d5232F378a8D5;
-    address aaveArcTimelock = 0xAce1d11d836cb3F51Ef658FD4D353fFb3c301218;
+    IArcTimelock arcTimelock = IArcTimelock(0xAce1d11d836cb3F51Ef658FD4D353fFb3c301218);
 
     IAaveGovernanceV2 aaveGovernanceV2 = IAaveGovernanceV2(aaveGovernanceAddress);
     IExecutorWithTimelock shortExecutor = IExecutorWithTimelock(aaveGovernanceShortExecutor);
@@ -61,9 +62,8 @@ contract ProposalPayloadTest is DSTest, stdCheats {
     }
 
     function testExecute() public {
-        // Pre-execution assertations
         _executeProposal();
-        // Post-execution assertations
+        _executeArcTimelock();
     }
 
     function _executeProposal() public {
@@ -73,6 +73,12 @@ contract ProposalPayloadTest is DSTest, stdCheats {
         // confirm state after
         IAaveGovernanceV2.ProposalState state = aaveGovernanceV2.getProposalState(proposalId);
         assertEq(uint256(state), uint256(IAaveGovernanceV2.ProposalState.Executed), "PROPOSAL_NOT_IN_EXPECTED_STATE");
+    }
+
+    function _executeArcTimelock() public {
+        vm.warp(block.timestamp + 172800);
+        uint actionNum = arcTimelock.getActionsSetCount() - 1;
+        arcTimelock.execute(actionNum);
     }
 
     /*******************************************************************************/
