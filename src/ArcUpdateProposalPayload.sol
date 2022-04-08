@@ -9,10 +9,6 @@ import { ILendingPoolConfigurator } from "./interfaces/ILendingPoolConfigurator.
 /// @notice Aave ARC parameter update proposal
 contract ArcUpdateProposalPayload {
 
-    /*///////////////////////////////////////////////////////////////
-                               CONSTANTS
-    //////////////////////////////////////////////////////////////*/
-
     /// @notice AAVE ARC LendingPoolConfigurator
     ILendingPoolConfigurator constant configurator = ILendingPoolConfigurator(0x4e1c7865e7BE78A7748724Fa0409e88dc14E67aA);
 
@@ -57,7 +53,7 @@ contract ArcUpdateProposalPayload {
     /// @notice The AAVE ARC timelock delegateCalls this
     function execute() external {
         // address, ltv, liqthresh, bonus
-        configurator.configureReserveAsCollateral(usdc, 8300, 8500, 10400);
+        configurator.configureReserveAsCollateral(usdc, 8550, 8600, 10450);
         configurator.setReserveFactor(usdc, 1000);
 
         configurator.configureReserveAsCollateral(weth, 8300, 8500, 10500);

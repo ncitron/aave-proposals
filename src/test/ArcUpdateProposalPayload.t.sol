@@ -82,9 +82,9 @@ contract ProposalPayloadTest is DSTest, stdCheats {
         uint256 reserveFactor;
 
         (, ltv, liqThresh, liqBonus, reserveFactor,,,,,) = dataProvider.getReserveConfigurationData(usdc);
-        assertEq(ltv, 8300);
-        assertEq(liqThresh, 8500);
-        assertEq(liqBonus, 10400);
+        assertEq(ltv, 8550);
+        assertEq(liqThresh, 8600);
+        assertEq(liqBonus, 10450);
         assertEq(reserveFactor, 1000);
 
         (, ltv, liqThresh, liqBonus, reserveFactor,,,,,) = dataProvider.getReserveConfigurationData(weth);
