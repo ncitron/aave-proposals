@@ -12,6 +12,7 @@ import "./interfaces/Vm.sol";
 import "../interfaces/IArcTimelock.sol";
 import "../interfaces/IAaveGovernanceV2.sol";
 import "../interfaces/IExecutorWithTimelock.sol";
+import "../interfaces/IERC20.sol";
 import "../interfaces/IProtocolDataProvider.sol";
 import "../ArcUpdateProposalPayload.sol";
 
@@ -49,6 +50,7 @@ contract ProposalPayloadTest is DSTest, stdCheats {
     address constant wbtc = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599;
     address constant aave = 0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9;
 
+    address govHouse = 0x82cD339Fa7d6f22242B31d5f7ea37c1B721dB9C3;
 
     function setUp() public {
         // aave whales may need to be updated based on the block being used
@@ -70,12 +72,9 @@ contract ProposalPayloadTest is DSTest, stdCheats {
         _skipQueuePeriod();
     }
 
-    function testExecute() public {
-        // execute proposal
+    function testExecuteLtv() public {
         _executeProposal();
-        _executeArcTimelock();
 
-        // validate post execution state
         uint256 ltv;
         uint256 liqThresh;
         uint256 liqBonus;
@@ -106,6 +105,14 @@ contract ProposalPayloadTest is DSTest, stdCheats {
         assertEq(reserveFactor, 0);
     }
 
+    function testExecuteAaveRefund() public {
+        uint256 initAave = IERC20(aave).balanceOf(govHouse);
+        _executeProposal();
+        uint256 finalAave = IERC20(aave).balanceOf(govHouse);
+
+        assertEq(finalAave - initAave, 10 ether);
+    }
+
     function _executeProposal() public {
         // execute proposal
         aaveGovernanceV2.execute(proposalId);
@@ -113,9 +120,8 @@ contract ProposalPayloadTest is DSTest, stdCheats {
         // confirm state after
         IAaveGovernanceV2.ProposalState state = aaveGovernanceV2.getProposalState(proposalId);
         assertEq(uint256(state), uint256(IAaveGovernanceV2.ProposalState.Executed), "PROPOSAL_NOT_IN_EXPECTED_STATE");
-    }
 
-    function _executeArcTimelock() public {
+        // execute arc timelock
         vm.warp(block.timestamp + 172800);
         uint actionNum = arcTimelock.getActionsSetCount() - 1;
         arcTimelock.execute(actionNum);

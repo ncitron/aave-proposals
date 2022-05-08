@@ -2,6 +2,7 @@
 pragma solidity 0.8.10;
 
 import { IArcTimelock } from  "./interfaces/IArcTimelock.sol";
+import { IEcosystemReserveController } from "./interfaces/IEcosystemReserveController.sol";
 import { ILendingPoolConfigurator } from "./interfaces/ILendingPoolConfigurator.sol";
 
 /// @title ArcUpdateProposalPayload
@@ -14,6 +15,12 @@ contract ArcUpdateProposalPayload {
 
     /// @notice AAVE ARC timelock
     IArcTimelock constant arcTimelock = IArcTimelock(0xAce1d11d836cb3F51Ef658FD4D353fFb3c301218);
+
+    /// @notice AAVE Ecosystem Reserve Controller
+    IEcosystemReserveController constant reserveController = IEcosystemReserveController(0x1E506cbb6721B83B1549fa1558332381Ffa61A93);
+
+    /// @notice Governance House Multisig
+    address constant govHouse = 0x82cD339Fa7d6f22242B31d5f7ea37c1B721dB9C3;
 
     /// @notice usdc token
     address constant usdc = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
@@ -30,7 +37,7 @@ contract ArcUpdateProposalPayload {
     /// @notice address of current contract
     address immutable self;
 
-    constructor() public {
+    constructor() {
         self = address(this);
     }
     
@@ -48,6 +55,9 @@ contract ArcUpdateProposalPayload {
         withDelegatecalls[0] = true;
 
         arcTimelock.queue(targets, values, signatures, calldatas, withDelegatecalls);
+
+        // reimburse gas costs from ecosystem reserve
+        reserveController.transfer(aave, govHouse, 10 ether);
     }
 
     /// @notice The AAVE ARC timelock delegateCalls this
