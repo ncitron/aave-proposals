@@ -82,12 +82,12 @@ contract ProposalPayloadTest is DSTest, stdCheats {
 
         (, ltv, liqThresh, liqBonus, reserveFactor,,,,,) = dataProvider.getReserveConfigurationData(usdc);
         assertEq(ltv, 8550);
-        assertEq(liqThresh, 8600);
+        assertEq(liqThresh, 8800);
         assertEq(liqBonus, 10450);
         assertEq(reserveFactor, 1000);
 
         (, ltv, liqThresh, liqBonus, reserveFactor,,,,,) = dataProvider.getReserveConfigurationData(weth);
-        assertEq(ltv, 8300);
+        assertEq(ltv, 8250);
         assertEq(liqThresh, 8500);
         assertEq(liqBonus, 10500);
         assertEq(reserveFactor, 1000);
@@ -95,13 +95,13 @@ contract ProposalPayloadTest is DSTest, stdCheats {
         (, ltv, liqThresh, liqBonus, reserveFactor,,,,,) = dataProvider.getReserveConfigurationData(wbtc);
         assertEq(ltv, 7000);
         assertEq(liqThresh, 7500);
-        assertEq(liqBonus, 10700);
+        assertEq(liqBonus, 10650);
         assertEq(reserveFactor, 2000);
 
         (, ltv, liqThresh, liqBonus, reserveFactor,,,,,) = dataProvider.getReserveConfigurationData(aave);
-        assertEq(ltv, 6000);
+        assertEq(ltv, 6250);
         assertEq(liqThresh, 7000);
-        assertEq(liqBonus, 10800);
+        assertEq(liqBonus, 10750);
         assertEq(reserveFactor, 0);
     }
 
@@ -110,7 +110,7 @@ contract ProposalPayloadTest is DSTest, stdCheats {
         _executeProposal();
         uint256 finalAave = IERC20(aave).balanceOf(govHouse);
 
-        assertEq(finalAave - initAave, 10 ether);
+        assertEq(finalAave - initAave, 15 ether);
     }
 
     function _executeProposal() public {

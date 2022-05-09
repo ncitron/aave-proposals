@@ -60,22 +60,15 @@ contract ArcUpdateProposalPayload {
         arcTimelock.queue(targets, values, signatures, calldatas, withDelegatecalls);
 
         // reimburse gas costs from ecosystem reserve
-        reserveController.transfer(reserve, aave, govHouse, 10 ether);
+        reserveController.transfer(reserve, aave, govHouse, 15 ether);
     }
 
     /// @notice The AAVE ARC timelock delegateCalls this
     function execute() external {
         // address, ltv, liqthresh, bonus
-        configurator.configureReserveAsCollateral(usdc, 8550, 8600, 10450);
-        configurator.setReserveFactor(usdc, 1000);
-
-        configurator.configureReserveAsCollateral(weth, 8300, 8500, 10500);
-        configurator.setReserveFactor(weth, 1000);
-
-        configurator.configureReserveAsCollateral(wbtc, 7000, 7500, 10700);
-        configurator.setReserveFactor(wbtc, 2000);
-
-        configurator.configureReserveAsCollateral(aave, 6000, 7000, 10800);
-        configurator.setReserveFactor(aave, 0);
+        configurator.configureReserveAsCollateral(usdc, 8550, 8800, 10450);
+        configurator.configureReserveAsCollateral(weth, 8250, 8500, 10500);
+        configurator.configureReserveAsCollateral(wbtc, 7000, 7500, 10650);
+        configurator.configureReserveAsCollateral(aave, 6250, 7000, 10750);
     }
 }
