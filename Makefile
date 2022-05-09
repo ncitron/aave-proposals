@@ -12,4 +12,4 @@ report   :; forge test --fork-url ${FORK_URL} --gas-report  | cat > .gas-report
 match    :; forge test --fork-url ${FORK_URL} -m ${MATCH} -vvv
 trace    :; forge test --fork-url ${FORK_URL} -vvvvv
 clean    :; forge clean
-snapshot :; forge snapshot --fork-url ${FORK_URL} ${BLOCK_NUMBER}
+snapshot :; forge snapshot --fork-url ${FORK_URL}
