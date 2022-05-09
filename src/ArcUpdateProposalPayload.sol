@@ -17,7 +17,10 @@ contract ArcUpdateProposalPayload {
     IArcTimelock constant arcTimelock = IArcTimelock(0xAce1d11d836cb3F51Ef658FD4D353fFb3c301218);
 
     /// @notice AAVE Ecosystem Reserve Controller
-    IEcosystemReserveController constant reserveController = IEcosystemReserveController(0x1E506cbb6721B83B1549fa1558332381Ffa61A93);
+    IEcosystemReserveController constant reserveController = IEcosystemReserveController(0x3d569673dAa0575c936c7c67c4E6AedA69CC630C);
+
+    /// @notice AAVE Ecosystem Reserve
+    address constant reserve = 0x25F2226B597E8F9514B3F68F00f494cF4f286491;
 
     /// @notice Governance House Multisig
     address constant govHouse = 0x82cD339Fa7d6f22242B31d5f7ea37c1B721dB9C3;
@@ -57,7 +60,7 @@ contract ArcUpdateProposalPayload {
         arcTimelock.queue(targets, values, signatures, calldatas, withDelegatecalls);
 
         // reimburse gas costs from ecosystem reserve
-        reserveController.transfer(aave, govHouse, 10 ether);
+        reserveController.transfer(reserve, aave, govHouse, 10 ether);
     }
 
     /// @notice The AAVE ARC timelock delegateCalls this
