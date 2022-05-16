@@ -136,7 +136,7 @@ contract ProposalPayloadTest is DSTest, stdCheats {
         // tokenDistributorAddress = deployCode("TokenDistributor.sol:TokenDistributor");
         // ecosystemReserveAddress = deployCode("AaveEcosystemReserve.sol:AaveEcosystemReserve");
 
-        ArcUpdateProposalPayload proposalPayload = new ArcUpdateProposalPayload();
+        ArcUpdateProposalPayload proposalPayload = ArcUpdateProposalPayload(0xea512572904c6E65A55Bc69754E2B02c055cECcF);
         proposalPayloadAddress = address(proposalPayload);
 
         bytes memory emptyBytes;
